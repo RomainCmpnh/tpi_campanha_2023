@@ -1,3 +1,20 @@
+<?php
+//******************/
+// * Nom et prénom : CAMPANHA Romain
+// * Date : 30septembre 2022
+// * Version : 1.0
+// * Fichier : accueil.php
+// * Description : Page d'acceuil : affichage des productions, recherche des productions et information sur Foto'class en bas de page. Permet a l'utilisateur d'ajouter une production
+// * Description : Si l'utilisateur selectionne le bouton "voir" d'une production, il accède à la page détail de la production selectionnée
+//**************** */
+
+session_start();
+include("../model/functions/productions_functions.php");
+
+
+// $allProductionUser = getAllProductionsOrderNewByUser($_SESSION["idUser"]);
+
+?>
 <!DOCTYPE html>
 <html>
 
