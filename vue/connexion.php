@@ -29,7 +29,7 @@ if (isset($pseudo) != null && isset($mdp) != null) {
         try {
           
                 $_SESSION["role"] = "user";
-                $_SESSION["idUser"] = $user[0]["id_user"];
+                $_SESSION["idUser"] = $user[0]["id"];
                 header("Location: accueil.php");
             
            

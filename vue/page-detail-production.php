@@ -1,3 +1,64 @@
+<?php
+//******************/
+// * Nom et prénom : CAMPANHA Romain
+// * Date : 30 Septembre 2022
+// * Version : 1.0
+// * Fichier : page-detail-produiction.php
+// * Description : affiche les détails du produit séléctionner. Permet a l'utilisateur de supprimer la production, ou d'accéder a sa page de modification
+//**************** */
+session_start();
+
+include("../model/functions/productions_functions.php");
+include("../model/functions/motsclefs_functions.php");
+
+// Récupère la production via l'id
+$idProduction = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
+$allProduction = null;
+$erreur = false;
+if (isset($idProduction) && isset($idProduction) != null) {
+    $allProduction = getAllTshirtsById($idProduction);
+}
+if ($alltshirts == null) {
+    $erreur = true;
+} else {
+    // Récupère le model du t-shirt
+    $model = getAllModelsById($alltshirts[0]["id_model"]);
+    // Récupère la marque de la t-shirt
+    $marque = getAllBrandsById($model[0]["id_brand"]);
+    // Regarde s'il reste des t-shirts ou non
+    $epuise = false;
+    if ($alltshirts[0]["quantity"] < 1) {
+        $messageQuantity = '<p style="color: rgb(255, 0, 0);">Non disponible</p>';
+        $epuise = true;
+    } else if ($alltshirts[0]["quantity"] < 5) {
+        $messageQuantity = '<p style="color: rgb(255, 132, 0);">' . $alltshirts[0]["quantity"] . ' réstante.</p>';
+    } else {
+        $messageQuantity = '<p style="color: rgb(35,174,0);">Disponible</p>';
+    }
+}
+
+$isAdd = false;
+// Ajoute au panier
+$ajoutPanier = filter_input(INPUT_POST, "add-panier", FILTER_SANITIZE_STRING);
+if (isset($ajoutPanier) == 1) {
+    if (isset($_SESSION["panier"])) {
+        array_push($_SESSION["panier"], $idtshirt);
+    } else {
+        $_SESSION["panier"] = array($idtshirt);
+    }
+    $newQuantity = ($alltshirts[0]["quantity"])-1;
+    updateQuantitytshirts($newQuantity, $idtshirt);
+    $isAdd = true;
+    $alltshirts = getAllTshirtsById($idtshirt);
+    if ($alltshirts[0]["quantity"] < 1) {
+        $messageQuantity = '<p style="color: rgb(255, 0, 0);">Non disponible</p>';
+        $epuise = true;
+    } else if ($alltshirts[0]["quantity"] < 5) {
+        $messageQuantity = '<p style="color: rgb(255, 132, 0);">' . $alltshirts[0]["quantity"] . ' réstante.</p>';
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html>
 
@@ -56,7 +117,11 @@
                                         <p>Voici la description de la production</p>
                                     </div>
                                 </div>
+                                <div class="filter-item"><a href="edit-production.php"><button class="btn btn-warning" type="button" style="background: rgb(255,226,76);border-color: rgb(255,226,76);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Modifier production</button></a></div>
+                                <div class="filter-item"><a href=""><button class="btn btn-warning" type="button" style="background: rgb(255,19,0);border-color: rgb(255,19,0);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Supprimer production</button></a></div>
+
                             </div>
+                            
                         </div>
                     </div>
                 </div>

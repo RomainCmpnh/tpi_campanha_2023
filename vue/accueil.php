@@ -10,10 +10,27 @@
 
 session_start();
 include("../model/functions/productions_functions.php");
+include("../model/functions/motsclefs_functions.php");
 
 
-// $allProductionUser = getAllProductionsOrderNewByUser($_SESSION["idUser"]);
 
+// Si l'utilisateur n'est pas connecté, il est renvoyé sur la page de connexion
+if (!isset($_SESSION["role"])) {
+    header("Location: connexion.php");
+}
+
+ 
+ $allProductionUser = getAllProductionsOrderNewByUser($_SESSION["idUser"]);
+
+ // Recherche de productions
+$rien = false;
+$recherche = filter_input(INPUT_GET, "recherche", FILTER_SANITIZE_STRING);
+if ($recherche != null || $recherche != "") {
+    $allProductionUser = getAllProductionUserBySearchNameAndLieux($recherche, $_SESSION["idUser"]);
+    if ($allProductionUser == null) {
+        $rien = true;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -67,205 +84,57 @@ include("../model/functions/productions_functions.php");
                             <div class="d-none d-md-block">
                                 <div class="filters">
                                     <div class="filter-item">
-                                        <h3 style="font-size: 24px;">Rechercher</h3><input type="text"><button class="btn btn-primary" type="button" style="margin-top: 3%;background: rgb(0,0,0);border-color: rgb(0,0,0);">Rechercher</button>
+                                    <form action="#" method="GET">
+                                                    <h3>Rechercher</h3><input type="text" name="recherche"><input
+                                                        type="submit" class="btn btn-primary" type="button"
+                                                        style="margin-top: 3%;background: rgb(0,0,0);border-color: rgb(0,0,0);" value="Rechercher">
+                                                </form>
                                     </div>
-                                    <div class="filter-item"><button class="btn btn-warning" type="button" style="background: rgb(19,237,0);border-color: rgb(19,237,0);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Ajouter une production</button></div>
+                                    <div class="filter-item"><a href="add-production.php"><button class="btn btn-warning" type="button" style="background: rgb(19,237,0);border-color: rgb(19,237,0);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Ajouter une production</button></a></div>
                                 </div>
                             </div>
-                            <div class="d-md-none"><a class="btn btn-link d-md-none filter-collapse" data-toggle="collapse" aria-expanded="false" aria-controls="filters" href="#filters" role="button">Filters<i class="icon-arrow-down filter-caret"></i></a>
-                                <div class="collapse" id="filters">
-                                    <div class="filters">
-                                        <div class="filter-item">
-                                            <h3 style="font-size: 24px;">Rechercher</h3><input type="text"><button class="btn btn-primary" type="button" style="margin-top: 3%;background: rgb(0,0,0);border-color: rgb(0,0,0);">Rechercher</button>
-                                        </div>
-                                        <div class="filter-item"><button class="btn btn-warning" type="button" style="background: rgb(19,237,0);border-color: rgb(19,237,0);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Ajouter une production</button></div>
-                                    </div>
-                                </div>
-                            </div>
+                           
                         </div>
                         <div class="col-md-9">
                             <div class="products">
                                 <div class="row no-gutters">
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="clean-product-item">
-                                            <h3 style="font-size: 24px;">Titre production&nbsp;</h3>
-                                            <p>date</p>
-                                            <div class="image"><a href="#"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
-                                            <div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span></div>
-                                            <div class="product-name"></div>
-                                            <div class="text-right about">
-                                                <div class="rating"><a href="#"></a></div>
-                                                <div></div>
-                                                <div class="price"></div>
-                                                <div class="text-right about">
-                                                    <div class="rating"><a href="#"></a></div>
-                                                    <div class="price"></div>
+                                <?php
+                                        if ($rien == true) {
+                                            echo "<p>Nous n’avons trouvé aucun résultat pour <b>'" . $recherche . "'</b></p>";
+                                        }
+                                        foreach ($allProductionUser as $item) {
+                                              // Récupère les mots clé de la production
+                                              $allTagsbyProduction = getAllTagByProductionId($item["id"]);
+                
+                                            // Récupère le lieux de la production
+                                            $lieu = getAlllieuxById($item["lieux_id"]);
+
+                                          
+                                            // Affiche la production
+                                            echo '<div class="col-12 col-md-6 col-lg-4">
+                                            <div class="clean-product-item">
+                                                <h3 style="font-size: 24px;"> '. $item["titre"] . '</h3>
+                                                <p>' . $item["date"] . ' </p>
+                                                <div class="image"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
+                                                
+                                                ';  foreach($allTagsbyProduction as $tags){
+                                              echo '<div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">'. $tags["libelle"] . ' </span></div>';
+                                                }
+
+                                               echo '
+                                                <div class="product-name"><a href="page-detail-production.php?id=' . $item["titre"] . '"></a></div>
+                                                <div class="lieu">
+                                                    <p>' . $lieu[0]["nom"] . '</p>
                                                 </div>
+                                                <a href="page-detail-production.php?id=' . $item["id"] . '"><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button></a>
                                             </div>
-                                            <p>lieu</p><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button>
-                                            <div></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="clean-product-item">
-                                            <h3 style="font-size: 24px;">Titre production&nbsp;</h3>
-                                            <p>date</p>
-                                            <div class="image"><a href="#"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
-                                            <div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span></div>
-                                            <div class="product-name"></div>
-                                            <div class="text-right about">
-                                                <div class="rating"><a href="#"></a></div>
-                                                <div></div>
-                                                <div class="price"></div>
-                                                <div class="text-right about">
-                                                    <div class="rating"><a href="#"></a></div>
-                                                    <div class="price"></div>
-                                                </div>
-                                            </div>
-                                            <p>lieu</p><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button>
-                                            <div></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="clean-product-item">
-                                            <h3 style="font-size: 24px;">Titre production&nbsp;</h3>
-                                            <p>date</p>
-                                            <div class="image"><a href="#"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
-                                            <div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span></div>
-                                            <div class="product-name"></div>
-                                            <div class="text-right about">
-                                                <div class="rating"><a href="#"></a></div>
-                                                <div></div>
-                                                <div class="price"></div>
-                                                <div class="text-right about">
-                                                    <div class="rating"><a href="#"></a></div>
-                                                    <div class="price"></div>
-                                                </div>
-                                            </div>
-                                            <p>lieu</p><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button>
-                                            <div></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="clean-product-item">
-                                            <h3 style="font-size: 24px;">Titre production&nbsp;</h3>
-                                            <p>date</p>
-                                            <div class="image"><a href="#"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
-                                            <div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span></div>
-                                            <div class="product-name"></div>
-                                            <div class="text-right about">
-                                                <div class="rating"><a href="#"></a></div>
-                                                <div></div>
-                                                <div class="price"></div>
-                                                <div class="text-right about">
-                                                    <div class="rating"><a href="#"></a></div>
-                                                    <div class="price"></div>
-                                                </div>
-                                            </div>
-                                            <p>lieu</p><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button>
-                                            <div></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="clean-product-item">
-                                            <h3 style="font-size: 24px;">Titre production&nbsp;</h3>
-                                            <p>date</p>
-                                            <div class="image"><a href="#"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
-                                            <div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span></div>
-                                            <div class="product-name"></div>
-                                            <div class="text-right about">
-                                                <div class="rating"><a href="#"></a></div>
-                                                <div></div>
-                                                <div class="price"></div>
-                                                <div class="text-right about">
-                                                    <div class="rating"><a href="#"></a></div>
-                                                    <div class="price"></div>
-                                                </div>
-                                            </div>
-                                            <p>lieu</p><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button>
-                                            <div></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="clean-product-item">
-                                            <h3 style="font-size: 24px;">Titre production&nbsp;</h3>
-                                            <p>date</p>
-                                            <div class="image"><a href="#"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
-                                            <div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span></div>
-                                            <div class="product-name"></div>
-                                            <div class="text-right about">
-                                                <div class="rating"><a href="#"></a></div>
-                                                <div></div>
-                                                <div class="price"></div>
-                                                <div class="text-right about">
-                                                    <div class="rating"><a href="#"></a></div>
-                                                    <div class="price"></div>
-                                                </div>
-                                            </div>
-                                            <p>lieu</p><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button>
-                                            <div></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="clean-product-item">
-                                            <h3 style="font-size: 24px;">Titre production&nbsp;</h3>
-                                            <p>date</p>
-                                            <div class="image"><a href="#"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
-                                            <div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span></div>
-                                            <div class="product-name"></div>
-                                            <div class="text-right about">
-                                                <div class="rating"><a href="#"></a></div>
-                                                <div></div>
-                                                <div class="price"></div>
-                                                <div class="text-right about">
-                                                    <div class="rating"><a href="#"></a></div>
-                                                    <div class="price"></div>
-                                                </div>
-                                            </div>
-                                            <p>lieu</p><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button>
-                                            <div></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="clean-product-item">
-                                            <h3 style="font-size: 24px;">Titre production&nbsp;</h3>
-                                            <p>date</p>
-                                            <div class="image"><a href="#"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
-                                            <div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span></div>
-                                            <div class="product-name"></div>
-                                            <div class="text-right about">
-                                                <div class="rating"><a href="#"></a></div>
-                                                <div></div>
-                                                <div class="price"></div>
-                                                <div class="text-right about">
-                                                    <div class="rating"><a href="#"></a></div>
-                                                    <div class="price"></div>
-                                                </div>
-                                            </div>
-                                            <p>lieu</p><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button>
-                                            <div></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="clean-product-item">
-                                            <h3 style="font-size: 24px;">Titre production&nbsp;</h3>
-                                            <p>date</p>
-                                            <div class="image"><a href="#"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
-                                            <div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span></div>
-                                            <div class="product-name"></div>
-                                            <div class="text-right about">
-                                                <div class="rating"><a href="#"></a></div>
-                                                <div></div>
-                                                <div class="price"></div>
-                                                <div class="text-right about">
-                                                    <div class="rating"><a href="#"></a></div>
-                                                    <div class="price"></div>
-                                                </div>
-                                            </div>
-                                            <p>lieu</p><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button>
-                                            <div></div>
-                                        </div>
-                                    </div>
+                                        </div>';
+                                            
+                                        }
+                                        ?>
+                                    
+                                   
+                                    
                                 </div>
                             </div>
                         </div>
