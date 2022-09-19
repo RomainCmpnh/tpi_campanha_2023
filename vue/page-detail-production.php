@@ -16,9 +16,9 @@ $idProduction = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
 $allProduction = null;
 $erreur = false;
 if (isset($idProduction) && isset($idProduction) != null) {
-    $allProduction = getAllTshirtsById($idProduction);
+    $allProduction = getProductionById($idProduction);
 }
-if ($alltshirts == null) {
+if ($allProduction == null) {
     $erreur = true;
 } else {
     // Récupère le model du t-shirt
