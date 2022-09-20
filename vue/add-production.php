@@ -18,12 +18,17 @@ if(!isset($_SESSION["role"])){
     exit;
 }
 
+// Si l'utilisateur n'est pas connecté, il est renvoyé sur la page de connexion
+if (!isset($_SESSION["role"])) {
+    header("Location: connexion.php");
+}
+
 // Recuperation des données d'une nouvelle production
 $titre = filter_input(INPUT_POST, "titre", FILTER_SANITIZE_STRING);
 $date = filter_input(INPUT_POST, "date");
 $idlieu = filter_input(INPUT_POST, "lieu");
 $description = filter_input(INPUT_POST, "description", FILTER_SANITIZE_STRING);
-$motsclefs = filter_input(INPUT_POST, "motsclefs");
+$idmotsclefs = $_POST['motsclefs'];
 $idUser = $_SESSION["idUser"];
 
 $allLieux = getAllLieux();
@@ -31,13 +36,16 @@ $allTags = getAllTags();
 // Ajout d'une nouvelle production
 if($titre != null && $date != null){
     $int_Lieu = (int) $idlieu;
-    addProduction($titre, $date, $description, $int_Lieu, $idUser);
-    
-   
-    header("Location: accueil.php?new=1");
+    $lastid = addProduction($titre, $date, $description, $int_Lieu, $idUser);
+    if($idmotsclefs != null){
+    foreach($idmotsclefs as $item){
+        $int_MotCle = (int) $item;
+        addMotsClefsToProduction($int_MotCle, $lastid[1]);
+    }
+}
+header("Location: accueil.php?new=1");
     exit;
 }
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -80,6 +88,7 @@ if($titre != null && $date != null){
                     <p style="font-family: 'Roboto Slab', serif;font-size: 35px;color: rgb(0,0,0);text-align: center;">Ajouter une production</p>
                 </div>
                 <form action="#" method="POST">
+ 
                     <div class="form-group"><label for="title">Titre*</label><input class="form-control" type="text" id="titre" name="titre" required=""></div>
                     <div class="form-group"><label for="date">Date*</label><input class="form-control" type="date" required="" id="date" name="date"></div>
                     <label for="lieu">Lieu</label><select class="form-control" style="margin-bottom: 9px;" name="lieu" id="lieu">
@@ -87,7 +96,7 @@ if($titre != null && $date != null){
                             <?php 
                             foreach($allLieux as $item) {
                                 echo '<option value="'. $item["id"] . '" selected="">' . $item["nom"] . ' </option>';
-                                '<input type="hidden" name="lieuID" id="lieuID" value="' . $item["id"] . '">';
+                                
                             }
                             ?>
                     
@@ -95,8 +104,8 @@ if($titre != null && $date != null){
                     </select>
                     <div class="form-group"><label for="description">Description</label><textarea class="form-control" id="description" name="description"></textarea></div>
                     <div class="form-group"><label for="mots clefs">Mots clefs</label>
-                    <?php  var_dump($_POST); ?>
-                    <select class="form-control d-xl-flex" style="margin-bottom: 9px;" multiple="" name="motsclefs" id="motsclefs">
+                 
+                    <select class="form-control d-xl-flex" style="margin-bottom: 9px;" multiple="" name="motsclefs[]" id="motsclefs">
                             <optgroup label="Liste de mots clefs">
                             <?php 
                             foreach($allTags as $item) {
@@ -104,7 +113,6 @@ if($titre != null && $date != null){
                             
                             }
                             ?>
-            
                             </optgroup>
                         </select></div>
                     <div class="form-group"><label for="image">Image*</label><input class="form-control-file" type="file" name="image" ></div>

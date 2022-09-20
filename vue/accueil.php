@@ -26,7 +26,7 @@ if (!isset($_SESSION["role"])) {
 $rien = false;
 $recherche = filter_input(INPUT_GET, "recherche", FILTER_SANITIZE_STRING);
 if ($recherche != null || $recherche != "") {
-    $allProductionUser = getAllProductionUserBySearchNameAndLieux($recherche, $_SESSION["idUser"]);
+    $allProductionUser =  getAllProductionUserBySearch($recherche, $_SESSION["idUser"]);
     if ($allProductionUser == null) {
         $rien = true;
     }

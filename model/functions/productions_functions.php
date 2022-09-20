@@ -52,38 +52,23 @@ function getAllProductionUserBySearch($search, $userid){
 
     $search = "%".$search."%";
 
+    
     $sql = "SELECT * FROM productions  AS c 
-    JOIN lieux as l ON l.id = c.lieux_id  
-    JOIN productions_has_motsclefs as t ON t.productions_id = c.id 
-    JOIN motsclefs as m ON m.id = t.motsclefs_id
-    WHERE  utilisateurs_id = :id_user  AND l.nom OR c.titre OR m.libelle LIKE :search";
+    INNER JOIN lieux as l ON l.id = c.lieux_id  
+    LEFT JOIN productions_has_motsclefs as t ON c.id = t.productions_id 
+    LEFT JOIN motsclefs as m ON t.motsclefs_id = m.id
+    WHERE  utilisateurs_id = :idUser AND l.nom LIKE :search OR c.titre LIKE :search2 OR m.libelle LIKE :search3";
 
     $query = connect()->prepare($sql);
 
     $query->execute([
+        ':idUser' => $userid,
         ':search' => $search,
-        ':id_user' => $userid,
+        ':search2' => $search,
+        ':search3' => $search,
     ]);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
-
-function getAllProductionUserBySearchNameAndLieux($search, $userid){
-
-    $search = "%".$search."%";
-
-    $sql = "SELECT * FROM productions  AS c 
-    JOIN lieux as l ON l.id = c.lieux_id  
-    WHERE  utilisateurs_id = :id_user  AND l.nom OR c.titre LIKE :search";
-
-    $query = connect()->prepare($sql);
-
-    $query->execute([
-        ':search' => $search,
-        ':id_user' => $userid,
-    ]);
-    return $query->fetchAll(PDO::FETCH_ASSOC);
-}
-
 // Récupère un lieu qui correspond à un certain ID
 function getAllLieuxById($id){
 
@@ -100,7 +85,8 @@ function getAllLieuxById($id){
 // Récupère les mots clefs qui correspondent à l'id de la production choisie
 function getAllMotsClefsById($id){
 
-    $sql = "SELECT * FROM productions_has_motsclefs WHERE production_id = :id";
+    $sql = "SELECT * FROM productions_has_motsclefs 
+    WHERE production_id = :id";
 
     $query = connect()->prepare($sql);
 
@@ -111,7 +97,7 @@ function getAllMotsClefsById($id){
 }
 
 
-// Ajoute un tshirt
+// Ajoute une Production
 function addProduction($titre, $date, $description, $idLieu, $idUser){
     $sql = "INSERT INTO productions(utilisateurs_id, titre, description, date ,filename, lieux_id) VALUES (:id_user, :titre, :description, :date , '' , :lieux_id)";
 
@@ -141,5 +127,20 @@ function addProduction($titre, $date, $description, $idLieu, $idUser){
     ]);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
+
+// Ajoute une Production
+function addMotsClefsToProduction($idMotClef , $idProduction){
+    $sql = "INSERT INTO productions_has_motsclefs(productions_id, motsclefs_id) VALUES (:production_id, :motsclefs_id)";
+
+    $query = connect()->prepare($sql);
+
+    $query->execute([
+        ':motsclefs_id' => $idMotClef,
+        ':production_id' => $idProduction,
+        
+    ]);
+    return array($query->fetchAll(PDO::FETCH_ASSOC));
+}
+
 
 ?>

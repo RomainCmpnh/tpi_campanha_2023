@@ -11,51 +11,29 @@ session_start();
 include("../model/functions/productions_functions.php");
 include("../model/functions/motsclefs_functions.php");
 
-// Récupère la production via l'id
-$idProduction = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
-$allProduction = null;
-$erreur = false;
-if (isset($idProduction) && isset($idProduction) != null) {
-    $allProduction = getProductionById($idProduction);
-}
-if ($allProduction == null) {
-    $erreur = true;
-} else {
-    // Récupère le model du t-shirt
-    $model = getAllModelsById($alltshirts[0]["id_model"]);
-    // Récupère la marque de la t-shirt
-    $marque = getAllBrandsById($model[0]["id_brand"]);
-    // Regarde s'il reste des t-shirts ou non
-    $epuise = false;
-    if ($alltshirts[0]["quantity"] < 1) {
-        $messageQuantity = '<p style="color: rgb(255, 0, 0);">Non disponible</p>';
-        $epuise = true;
-    } else if ($alltshirts[0]["quantity"] < 5) {
-        $messageQuantity = '<p style="color: rgb(255, 132, 0);">' . $alltshirts[0]["quantity"] . ' réstante.</p>';
-    } else {
-        $messageQuantity = '<p style="color: rgb(35,174,0);">Disponible</p>';
-    }
+
+// Si l'utilisateur n'est pas connecté, il est renvoyé sur la page de connexion
+if (!isset($_SESSION["role"])) {
+    header("Location: connexion.php");
 }
 
-$isAdd = false;
-// Ajoute au panier
-$ajoutPanier = filter_input(INPUT_POST, "add-panier", FILTER_SANITIZE_STRING);
-if (isset($ajoutPanier) == 1) {
-    if (isset($_SESSION["panier"])) {
-        array_push($_SESSION["panier"], $idtshirt);
-    } else {
-        $_SESSION["panier"] = array($idtshirt);
-    }
-    $newQuantity = ($alltshirts[0]["quantity"])-1;
-    updateQuantitytshirts($newQuantity, $idtshirt);
-    $isAdd = true;
-    $alltshirts = getAllTshirtsById($idtshirt);
-    if ($alltshirts[0]["quantity"] < 1) {
-        $messageQuantity = '<p style="color: rgb(255, 0, 0);">Non disponible</p>';
-        $epuise = true;
-    } else if ($alltshirts[0]["quantity"] < 5) {
-        $messageQuantity = '<p style="color: rgb(255, 132, 0);">' . $alltshirts[0]["quantity"] . ' réstante.</p>';
-    }
+// Récupère la production via l'id
+$idProduction = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
+$production = null;
+$erreur = false;
+if (isset($idProduction) && isset($idProduction) != null) {
+    $production = getProductionById($idProduction);
+}
+if ($production == null) {
+    $erreur = true;
+} else {
+    // Récupère le lieu de la production
+    $lieu = getAllLieuxById($production[0]["lieux_id"]);
+    
+    // Récupère la liste des mots clefs de la production
+    $allMotsClefs = getAllTagByProductionId($idProduction);
+
+    
 }
 
 ?>
@@ -107,14 +85,18 @@ if (isset($ajoutPanier) == 1) {
                             </div>
                             <div class="col-md-6">
                                 <div class="info">
-                                    <h3>Titre production</h3>
-                                    <div class="rating"><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 1</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 2</span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">Tague 3</span></div>
+                                    <h3><?php echo $production[0]["titre"]?></h3>
+                                    <?php 
+                                    foreach($allMotsClefs as $tags){
+                                        echo '<div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">'. $tags["libelle"] . ' </span></div>';
+                                          }
+                                    ?>
                                     <div class="price">
-                                        <h3>Lieu</h3>
-                                        <h3>Date</h3>
+                                        <h3><?php echo $lieu[0]["nom"]?></h3>
+                                        <h3><?php echo $production[0]["date"]?></h3>
                                     </div>
                                     <div class="summary">
-                                        <p>Voici la description de la production</p>
+                                        <p><?php echo $production[0]["description"]?></p>
                                     </div>
                                 </div>
                                 <div class="filter-item"><a href="edit-production.php"><button class="btn btn-warning" type="button" style="background: rgb(255,226,76);border-color: rgb(255,226,76);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Modifier production</button></a></div>
