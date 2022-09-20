@@ -115,15 +115,32 @@ function addProduction($titre, $date, $description, $idLieu, $idUser){
     return array($query->fetchAll(PDO::FETCH_ASSOC), $id);
 }
 
- // Récupère la production qui corréspond à un certain ID
- function getProductionById($id){
+// Modifie les données d'une production
+function updateProduction($idProduction, $titre, $description, $date, $idLieu){
 
-    $sql = "SELECT * FROM productions WHERE id = :id";
+    $sql = "UPDATE productions SET titre=:titre, description=:description, date=:date,  filename = '', lieux_id = :lieux_id WHERE id = :production_id";
 
     $query = connect()->prepare($sql);
 
     $query->execute([
-        ':id' => $id,
+        ':production_id' => $idProduction,
+        ':titre' => $titre,
+        ':description' => $description,
+        ':date' => $date,
+        ':lieux_id' => $idLieu,
+    ]);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function updateProductionMotsClefs($idProduction, $idMotClef){
+
+    $sql = "UPDATE productions_has_motsclefs SET productions_id=:productions_id, motsclefs_id= :motsclefs_id WHERE productions_id = :productions_id";
+
+    $query = connect()->prepare($sql);
+
+    $query->execute([
+        ':productions_id' => $idProduction,
+        ':motsclefs_id' => $idMotClef,
     ]);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -140,6 +157,45 @@ function addMotsClefsToProduction($idMotClef , $idProduction){
         
     ]);
     return array($query->fetchAll(PDO::FETCH_ASSOC));
+}
+
+ // Récupère la production qui corréspond à un certain ID
+ function getProductionById($id){
+
+    $sql = "SELECT * FROM productions WHERE id = :id";
+
+    $query = connect()->prepare($sql);
+
+    $query->execute([
+        ':id' => $id,
+    ]);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
+// Supprime une production
+function delProduction($idProduction){
+    $sql = "DELETE FROM  productions WHERE id = :id_production";
+    
+    $query = connect()->prepare($sql);
+
+    $query->execute([
+        ':id_production' => $idProduction,
+    ]);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Supprime une production
+function delMotClefsProd($idProduction){
+    $sql = "DELETE FROM  productions_has_motsclefs WHERE productions_id = :id_production";
+    
+    $query = connect()->prepare($sql);
+
+    $query->execute([
+        ':id_production' => $idProduction,
+    ]);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
 

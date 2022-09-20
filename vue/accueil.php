@@ -19,7 +19,7 @@ if (!isset($_SESSION["role"])) {
     header("Location: connexion.php");
 }
 
- 
+
  $allProductionUser = getAllProductionsOrderNewByUser($_SESSION["idUser"]);
 
  // Recherche de productions
@@ -29,6 +29,24 @@ if ($recherche != null || $recherche != "") {
     $allProductionUser =  getAllProductionUserBySearch($recherche, $_SESSION["idUser"]);
     if ($allProductionUser == null) {
         $rien = true;
+    }
+}
+//lorsque une production est ajoutée
+$new = filter_input(INPUT_GET, "new", FILTER_SANITIZE_STRING);
+if($new == 1){
+    $confMsg = 1;
+}
+
+//supression d'une production
+$del = filter_input(INPUT_GET, "del", FILTER_SANITIZE_STRING);
+if($del==1){
+    if(isset($_SESSION["role"])){
+            $idToDelete = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
+            delMotClefsProd($idToDelete);
+            delProduction($idToDelete);
+            header("Refresh:0; url=accueil.php");
+            $confMsg = 1;
+        
     }
 }
 ?>
@@ -77,6 +95,16 @@ if ($recherche != null || $recherche != "") {
                 <div class="block-heading">
                     <p style="font-family: 'Roboto Slab', serif;font-size: 32px;color: rgb(0,0,0);">Foto'class</p>
                     <p style="font-family: 'Roboto Slab', serif;">Voici vos super productions !</p>
+                    <?php
+                            if($confMsg==1){
+                                echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>Succès!</strong> L\'action a été éxécutée!
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>';
+                            }
+                        ?>
                 </div>
                 <div class="content">
                     <div class="row">

@@ -36,6 +36,7 @@ if ($production == null) {
     
 }
 
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -99,9 +100,11 @@ if ($production == null) {
                                         <p><?php echo $production[0]["description"]?></p>
                                     </div>
                                 </div>
-                                <div class="filter-item"><a href="edit-production.php"><button class="btn btn-warning" type="button" style="background: rgb(255,226,76);border-color: rgb(255,226,76);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Modifier production</button></a></div>
-                                <div class="filter-item"><a href=""><button class="btn btn-warning" type="button" style="background: rgb(255,19,0);border-color: rgb(255,19,0);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Supprimer production</button></a></div>
-
+                                <form action="page-detail-production.php?id=<?php echo $idProduction; ?>" method="POST">
+                                <?php echo '<div class="filter-item"><a href="edit-production.php?id='.$idProduction.'"><button class="btn btn-warning" type="button" style="background: rgb(255,226,76);border-color: rgb(255,226,76);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Modifier production</button></a></div>' ?>
+                                <?php echo '<div class="filter-item"><a href="accueil.php?del=1&id='.$idProduction.'"><button class="btn btn-warning" type="button" style="background: rgb(255,19,0);border-color: rgb(255,19,0);border-top-color: rgb(33,;border-right-color: 37,;border-bottom-color: 41);border-left-color: 37,;">Supprimer production</button></a></div>' ?>
+                                
+                                </form>          
                             </div>
                             
                         </div>

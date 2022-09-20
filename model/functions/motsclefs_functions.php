@@ -20,5 +20,27 @@ $query->execute([
 return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function getAllMotsClefs(){
 
+    $sql = "SELECT * FROM motsclefs ORDER BY id DESC";
+    
+    $query = connect()->prepare($sql);
+
+    $query->execute([
+        
+    ]);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
+function countMotsClefsOccurence($idMotClef){
+
+    $sql = "SELECT COUNT (*) FROM productions_has_motsclefs WHERE motsclefs_id = :idMotsClefs";
+    
+    $query = connect()->prepare($sql);
+
+    $query->execute([
+        ':idMotsClefs' => $idMotClef,
+    ]);
+    
+    return $query->fetchColumn();
+}
 ?>

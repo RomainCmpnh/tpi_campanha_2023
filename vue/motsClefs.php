@@ -1,3 +1,26 @@
+<?php
+//******************/
+// * Nom et prénom : CAMPANHA Romain
+// * Date : 30septembre 2022
+// * Version : 1.0
+// * Fichier : motsClefs.php
+// * Description : Page d'affichage et de gestion des mots clé
+//**************** */
+
+session_start();
+include("../model/functions/productions_functions.php");
+include("../model/functions/motsclefs_functions.php");
+
+
+
+// Si l'utilisateur n'est pas connecté, il est renvoyé sur la page de connexion
+if (!isset($_SESSION["role"])) {
+    header("Location: connexion.php");
+}
+
+
+$allMotClefs = getAllMotsClefs();
+?>
 <!DOCTYPE html>
 <html>
 
@@ -40,13 +63,16 @@
                 </div>
                 <form>
                     <div class="products">
-                        <h3 class="title">Liste mots clés</h3>
-                        <div class="item"><span class="price"><a href="#"><i class="fa fa-pencil" style="color: rgb(255,153,0);"></i></a>&nbsp;&nbsp;<a href="#"><i class="fa fa-trash" style="color: var(--red);"></i></a></span>
-                            <p class="item-name">mot clef #1</p>
-                        </div>
-                        <div class="item"><span class="price"><a href="#"><i class="fa fa-pencil" style="color: rgb(255,153,0);"></i></a>&nbsp;&nbsp;<a href="#"><i class="fa fa-trash" style="color: var(--red);"></i></a></span>
-                            <p class="item-name">mot clef #2</p>
-                        </div>
+                    <h3 class="title">Liste mots clés</h3>
+                        <?php 
+                        foreach($allMotClefs as $item) {
+                           $nb = countMotsClefsOccurence($item["id"]);
+                            echo '<div class="item"><span class="price"><a href="#"><i class="fa fa-pencil" style="color: rgb(255,153,0);"></i></a>&nbsp;&nbsp;<a href="#"><i class="fa fa-trash" style="color: var(--red);"></i></a></span>
+                            <p class="item-name">' . $item['libelle'] . "----------" . $nb .  "occurences" . '</p>
+                        </div>';
+                        }
+                        ?>
+                        
                     </div>
                 </form>
             </div>
