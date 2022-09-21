@@ -186,7 +186,7 @@ function delProduction($idProduction){
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Supprime une production
+// Supprime une liaison entre un mot clef et une production
 function delMotClefsProd($idProduction){
     $sql = "DELETE FROM  productions_has_motsclefs WHERE productions_id = :id_production";
     

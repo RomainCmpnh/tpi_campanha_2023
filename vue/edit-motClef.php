@@ -1,3 +1,48 @@
+<?php
+//******************/
+// * Nom et prénom : CAMPANHA Romain
+// * Date : 30 Septembre 2022
+// * Version : 1.0
+// * Fichier : edit-production.php
+// * Description : Permet a l'utilisateur de modifer les donnée de sa production
+//**************** */
+
+session_start();
+
+include("../model/functions/productions_functions.php");
+include("../model/functions/motsclefs_functions.php");
+
+// Si l'utilisateur n'est pas connecté, il est renvoyé sur la page de connexion
+if (!isset($_SESSION["role"])) {
+    header("Location: connexion.php");
+}
+
+
+
+// Récupération des données du mot clé
+$motClefId = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
+
+$libelle = filter_input(INPUT_POST, "libelle", FILTER_SANITIZE_STRING);
+
+// Modification de a production
+$succes=0;
+if($libelle != null){
+
+    $motClef = getMotClefId($motClefId);
+    $motClef = $motClef[0]["id"];
+
+    updateMotClef($motClefId, $libelle);
+  
+    $libelleValue = $libelle;
+    $succes=1;
+    
+}
+else{
+   $ancMotClef = getMotClefId($motClefId);
+   $libelleValue = $ancMotClef[0]["libelle"];
+}
+
+?>
 <!DOCTYPE html>
 <html>
 
@@ -37,8 +82,18 @@
             <div class="container">
                 <div class="block-heading"></div>
                 <p style="font-family: 'Roboto Slab', serif;font-size: 31px;color: rgb(0,0,0);text-align: center;margin-bottom: 11px;">Modification mot clef</p>
-                <form>
-                    <div class="form-group"><label for="name">mot clef</label><input class="form-control" type="text" id="name" name="pseudo"></div>
+                <form action="#" method="POST">
+                <?php
+                            if($succes==1){ 
+                            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Succès!</strong> La modification a été sauvegardée.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>';
+                            }
+                        ?>
+                    <div class="form-group"><label for="name">mot clef</label><input class="form-control" type="text" id="libelle" name="libelle" value=<?php echo '"'.$libelleValue.'"'; ?>></div>
                     <div class="form-group"><button class="btn btn-primary btn-block" type="submit" style="background: rgb(0,0,0);">Modifier</button></div>
                 </form>
             </div>

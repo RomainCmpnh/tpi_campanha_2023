@@ -18,8 +18,30 @@ if (!isset($_SESSION["role"])) {
     header("Location: connexion.php");
 }
 
+// Recuperation des données d'un nouveau mot clef
+$libelle = filter_input(INPUT_POST, "libelle", FILTER_SANITIZE_STRING);
 
+// Ajout d'une nouvelle production
+if($libelle != null){
+    addMotClefs($libelle);
+
+}
+
+//récuperation de la liste des mots clefs
 $allMotClefs = getAllMotsClefs();
+
+//supression d'un mot clef ainsi que les liaison avec les productions
+$del = filter_input(INPUT_GET, "del", FILTER_SANITIZE_STRING);
+if($del==1){
+    if(isset($_SESSION["role"])){
+            $idToDelete = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
+            delMotClefInProd($idToDelete);
+            delMotClef($idToDelete);
+            header("Refresh:0; url=motsClefs.php");
+          
+        
+    }
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -57,18 +79,24 @@ $allMotClefs = getAllMotsClefs();
     </nav>
     <main class="page contact-us-page">
         <section class="clean-block clean-form dark">
+    
             <div class="container">
+            <form action="#" method="POST">
                 <div class="block-heading">
-                    <p style="font-family: 'Roboto Slab', serif;font-size: 31px;color: rgb(0,0,0);text-align: center;margin-bottom: 11px;">mots clefs</p><button class="btn btn-success" type="button" style="margin-right: 7px;">Ajouter un mot clef</button><input type="text" name="motclefs">
+                    <p style="font-family: 'Roboto Slab', serif;font-size: 31px;color: rgb(0,0,0);text-align: center;margin-bottom: 11px;">mots clefs</p><button class="btn btn-success" type="submit" name="libelle" style="margin-right: 7px;">Ajouter un mot clef</button><input type="text" name="libelle">
+
                 </div>
-                <form>
+            </form>
+                <form action="#" method="POST">
                     <div class="products">
                     <h3 class="title">Liste mots clés</h3>
                         <?php 
                         foreach($allMotClefs as $item) {
                            $nb = countMotsClefsOccurence($item["id"]);
-                            echo '<div class="item"><span class="price"><a href="#"><i class="fa fa-pencil" style="color: rgb(255,153,0);"></i></a>&nbsp;&nbsp;<a href="#"><i class="fa fa-trash" style="color: var(--red);"></i></a></span>
-                            <p class="item-name">' . $item['libelle'] . "----------" . $nb .  "occurences" . '</p>
+                            echo '<div class="item"><span class=""><a href="edit-motClef.php?id='.$item["id"].'">
+                            <i class="fa fa-pencil" style="color: rgb(255,153,0);"></i></a>&nbsp;&nbsp;
+                            <a href="motsClefs.php?del=1&id='.$item["id"].'""><i class="fa fa-trash" style="color: var(--red);"></i></a></span>
+                            <p class="item-name">' . $item['libelle'] . "---------- " . $nb .  " occurences" . '</p>
                         </div>';
                         }
                         ?>
