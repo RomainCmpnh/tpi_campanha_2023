@@ -7,7 +7,7 @@
 // * Description : Modèle contenant toute les fonctions liées aux motsclefs
 //**************** */
 
-
+// récupère tout les mots clefs d'une production
 function getAllTagByProductionId($id){
 
 $sql = "SELECT * FROM motsclefs AS c JOIN  productions_has_motsclefs AS l ON l.motsclefs_id = c.id WHERE productions_id = :id_production  ORDER BY id DESC";
@@ -20,6 +20,7 @@ $query->execute([
 return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
+//récupère la liste des mots clefs
 function getAllMotsClefs(){
 
     $sql = "SELECT * FROM motsclefs ORDER BY id DESC";
@@ -31,6 +32,8 @@ function getAllMotsClefs(){
     ]);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
+
+//compte le nombre d'occurence d'un mot clef
 function countMotsClefsOccurence($idMotClef){
 
     $sql = "SELECT COUNT (*) FROM productions_has_motsclefs WHERE motsclefs_id = :idMotsClefs";

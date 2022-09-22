@@ -33,18 +33,34 @@ $idUser = $_SESSION["idUser"];
 
 $allLieux = getAllLieux();
 $allTags = getAllTags();
+
+// File upload path
+$targetDir = "../uploads/";
+$fileName = basename($_FILES["file"]["name"]);
+$targetFilePath = $targetDir . $fileName;
+$fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
+
 // Ajout d'une nouvelle production
-if($titre != null && $date != null){
+if($titre != null && $date != null && $fileName != null){
     $int_Lieu = (int) $idlieu;
-    $lastid = addProduction($titre, $date, $description, $int_Lieu, $idUser);
-    if($idmotsclefs != null){
-    foreach($idmotsclefs as $item){
-        $int_MotCle = (int) $item;
-        addMotsClefsToProduction($int_MotCle, $lastid[1]);
+    $allowTypes = array('jpg','png');
+    if(in_array($fileType, $allowTypes)){
+        // Upload file to server
+        if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)){
+            // Insert image file name into database
+            $lastid = addProduction($titre, $date, $description, $fileName , $int_Lieu, $idUser);
+            if($idmotsclefs != null){
+            foreach($idmotsclefs as $item){
+                $int_MotCle = (int) $item;
+                addMotsClefsToProduction($int_MotCle, $lastid[1]);
+            }
+        }
+        header("Location: accueil.php?new=1");
+            exit;
+        }
     }
-}
-header("Location: accueil.php?new=1");
-    exit;
+
+
 }
 ?>
 <!DOCTYPE html>
@@ -87,7 +103,7 @@ header("Location: accueil.php?new=1");
                 <div class="block-heading">
                     <p style="font-family: 'Roboto Slab', serif;font-size: 35px;color: rgb(0,0,0);text-align: center;">Ajouter une production</p>
                 </div>
-                <form action="#" method="POST">
+                <form action="#" method="POST" enctype="multipart/form-data">
  
                     <div class="form-group"><label for="title">Titre*</label><input class="form-control" type="text" id="titre" name="titre" required=""></div>
                     <div class="form-group"><label for="date">Date*</label><input class="form-control" type="date" required="" id="date" name="date"></div>
@@ -115,7 +131,7 @@ header("Location: accueil.php?new=1");
                             ?>
                             </optgroup>
                         </select></div>
-                    <div class="form-group"><label for="image">Image*</label><input class="form-control-file" type="file" name="image" ></div>
+                    <div class="form-group"><label for="image">Image*</label><input class="form-control-file" type="file" name="file" required=""></div>
                     <div class="form-group"><button class="btn btn-primary btn-block" type="submit" style="background: rgb(0,0,0);border-color: rgb(0,0,0);" >Ajouter</button></div>
                 </form>
             </div>

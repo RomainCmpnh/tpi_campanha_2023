@@ -37,11 +37,21 @@
             <div class="container">
                 <div class="block-heading">
                     <p style="font-family: 'Roboto Slab', serif;font-size: 31px;color: rgb(0,0,0);text-align: center;margin-bottom: 11px;">F.A.Q</p>
-                    <p class="text-left" style="font-size: 27px;color: rgb(0,0,0);">Question 1</p>
-                    <p style="margin-bottom: 2%;font-size: 20px;">Reponse 1</p>
-                    <div></div>
-                    <p class="text-left" style="font-size: 27px;color: rgb(0,0,0);">Question 2</p>
-                    <p style="margin-bottom: 2%;font-size: 20px;">Reponse 2</p>
+                    <p class="text-left" style="font-size: 27px;color: rgb(0,0,0);">Comment ajouter une nouvelle production photographique ?</p>
+                    <p style="margin-bottom: 3%;font-size: 20px;">Cliquer sur le bouton "ajouter une production" et remplir le formulaire</p>
+                   
+                    <p class="text-left" style="font-size: 27px;color: rgb(0,0,0);">Quels sont les formats d'images acceptés ?</p>
+                    <p style="margin-bottom: 3%;font-size: 20px;">Les formats jpg et png sont acceptés</p>
+
+                    <p class="text-left" style="font-size: 27px;color: rgb(0,0,0);">Quels sont les critères de recherche ?</p>
+                    <p style="margin-bottom: 3%;font-size: 20px;">Vous pouvez effectuer une recherche via le titre, le lieu, ou les mots clefs de vos productions</p>
+
+                    <p class="text-left" style="font-size: 27px;color: rgb(0,0,0);">Comment puis-je supprimer ou modifier une production ?</p>
+                    <p style="margin-bottom: 3%;font-size: 20px;">Les boutons "modifier" et "supprimer" se trouve sur la page détail de la production</p>
+
+                    <p class="text-left" style="font-size: 27px;color: rgb(0,0,0);">Certaines de mes productions ne sont pas affichées sur la page d'acceuil, ou sont elles ?</p>
+                    <p style="margin-bottom: 3%;font-size: 20px;">La page d'acceuil affiche les 10 dernières production, la liste complète de vos productions se trouve sur la page "production"</p>
+
                     <div class="block-heading"></div>
                 </div>
             </div>

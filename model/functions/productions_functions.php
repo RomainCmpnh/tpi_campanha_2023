@@ -98,8 +98,8 @@ function getAllMotsClefsById($id){
 
 
 // Ajoute une Production
-function addProduction($titre, $date, $description, $idLieu, $idUser){
-    $sql = "INSERT INTO productions(utilisateurs_id, titre, description, date ,filename, lieux_id) VALUES (:id_user, :titre, :description, :date , '' , :lieux_id)";
+function addProduction($titre, $date, $description, $filename,$idLieu, $idUser){
+    $sql = "INSERT INTO productions(utilisateurs_id, titre, description,filename, date , lieux_id) VALUES (:id_user, :titre, :description, :filename , :date ,  :lieux_id)";
 
     $query = connect()->prepare($sql);
 
@@ -107,7 +107,7 @@ function addProduction($titre, $date, $description, $idLieu, $idUser){
         ':id_user' => $idUser,
         ':titre' => $titre,
         ':description' => $description,
-       // ':filename' => $filename,
+        ':filename' => $filename,
         ':date' => $date,
         ':lieux_id' => $idLieu,
     ]);
@@ -116,9 +116,9 @@ function addProduction($titre, $date, $description, $idLieu, $idUser){
 }
 
 // Modifie les données d'une production
-function updateProduction($idProduction, $titre, $description, $date, $idLieu){
+function updateProduction($idProduction, $titre, $description, $filename, $date, $idLieu){
 
-    $sql = "UPDATE productions SET titre=:titre, description=:description, date=:date,  filename = '', lieux_id = :lieux_id WHERE id = :production_id";
+    $sql = "UPDATE productions SET titre=:titre, description=:description, date=:date,  filename = :filename, lieux_id = :lieux_id WHERE id = :production_id";
 
     $query = connect()->prepare($sql);
 
@@ -126,12 +126,14 @@ function updateProduction($idProduction, $titre, $description, $date, $idLieu){
         ':production_id' => $idProduction,
         ':titre' => $titre,
         ':description' => $description,
+        ':filename' => $filename,
         ':date' => $date,
         ':lieux_id' => $idLieu,
     ]);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
+//
 function updateProductionMotsClefs($idProduction, $idMotClef){
 
     $sql = "UPDATE productions_has_motsclefs SET productions_id=:productions_id, motsclefs_id= :motsclefs_id WHERE productions_id = :productions_id";
@@ -145,7 +147,7 @@ function updateProductionMotsClefs($idProduction, $idMotClef){
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Ajoute une Production
+// Ajoute un mot clef a une production
 function addMotsClefsToProduction($idMotClef , $idProduction){
     $sql = "INSERT INTO productions_has_motsclefs(productions_id, motsclefs_id) VALUES (:production_id, :motsclefs_id)";
 

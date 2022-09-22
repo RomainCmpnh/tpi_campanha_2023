@@ -27,35 +27,49 @@ $titre = filter_input(INPUT_POST, "titre", FILTER_SANITIZE_STRING);
 $date = filter_input(INPUT_POST, "date", FILTER_SANITIZE_STRING);
 $lieu = filter_input(INPUT_POST, "lieu", FILTER_SANITIZE_STRING);
 $description = filter_input(INPUT_POST, "description", FILTER_SANITIZE_STRING);
+
 $motsClefs = $_POST['motsclefs'];
+
+// File upload path
+$targetDir = "../uploads/";
+$fileName = basename($_FILES["file"]["name"]);
+$targetFilePath = $targetDir . $fileName;
+$fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
 
 // Modification de a production
 $succes=0;
 if($titre != null && $date != null && $lieu != null && $description != null){
-
-    $production = getProductionById($productionId);
-    $production = $production[0]["id"];
-
-    
-    updateProduction($productionId, $titre, $description , $date, $lieu );
-
-    if($motsClefs != null){
-        delMotClefsProd($productionId);
-        foreach($motsClefs as $item){
-            addMotsClefsToProduction($item["id"], $productionId);
-        }
+    $allowTypes = array('jpg','png');
+    if(in_array($fileType, $allowTypes)){
+        // Upload file to server
+        if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)){ 
+            $production = getProductionById($productionId);
+            $production = $production[0]["id"];
         
-    } elseif($motsClefs == null){
-        delMotClefsProd($productionId);
+            
+            updateProduction($productionId, $titre, $description , $fileName, $date, $lieu );
+        
+            if($motsClefs != null){
+                delMotClefsProd($productionId);
+                foreach($motsClefs as $item){
+                    addMotsClefsToProduction($item["id"], $productionId);
+                }
+                
+            } elseif($motsClefs == null){
+                delMotClefsProd($productionId);
+            }
+        
+          
+            $titreValue = $titre;
+            $dateValue = $date;
+            $lieuValue = $lieu;
+            $descriptionValue = $description;
+            $motsClefsValue = $motsClefs;
+            $fileNameValue =  $fileName;
+            $succes=1;
+        }
     }
-
-  
-    $titreValue = $titre;
-    $dateValue = $date;
-    $lieuValue = $lieu;
-    $descriptionValue = $description;
-    $motsClefsValue = $motsClefs;
-    $succes=1;
+   
 }
 else{
    $ancProduction = getProductionById($productionId);
@@ -63,6 +77,7 @@ else{
    $dateValue = $ancProduction[0]["date"];
    $lieuValue = $ancProduction[0]["lieux_id"];
    $descriptionValue = $ancProduction[0]["description"];
+   $fileNameValue = '../uploads/'.$ancProduction[0]["filename"];
   // $motsClefsValue = getAllMotsById($productionId);
 }
 
@@ -107,7 +122,7 @@ else{
                 <div class="block-heading"></div>
                 <p style="font-family: 'Roboto Slab', serif;font-size: 31px;color: rgb(0,0,0);text-align: center;margin-bottom: 11px;">Modification</p>
             </div>
-            <form action="#" method="POST">
+            <form action="#" method="POST" enctype="multipart/form-data">
             <?php
                             if($succes==1){ 
                             echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -146,7 +161,7 @@ else{
                             ?>
                         </optgroup>
                     </select></div>
-                <div class="form-group"><label for="image">Image</label><input class="form-control-file" type="file" name="image"></div>
+                    <div class="form-group"><label for="image">Image*</label><input class="form-control-file" type="file" name="file" required="" value=<?php echo '"'.$fileNameValue.'"'; ?>></div>
                 <div class="form-group"><button class="btn btn-primary btn-block" type="submit" style="background: rgb(0,0,0);border-color: rgb(0,0,0);">Modifier</button></div>
             </form>
         </section>

@@ -9,7 +9,9 @@
 //**************** */
 
 session_start();
+
 include("../model/functions/productions_functions.php");
+
 include("../model/functions/motsclefs_functions.php");
 
 
@@ -137,13 +139,15 @@ if($del==1){
                                             // Récupère le lieux de la production
                                             $lieu = getAlllieuxById($item["lieux_id"]);
 
-                                          
+                                            //url de l'image
+                                            $imageURL = '../uploads/'.$item["filename"];
+
                                             // Affiche la production
                                             echo '<div class="col-12 col-md-6 col-lg-4">
                                             <div class="clean-product-item">
                                                 <h3 style="font-size: 24px;"> '. $item["titre"] . '</h3>
                                                 <p>' . $item["date"] . ' </p>
-                                                <div class="image"><img class="img-fluid d-block mx-auto" src="assets/img/my-images/productions/production.jpg" width="220" height="146"></a></div>
+                                                <div class="image"><img class="img-fluid d-block mx-auto" src="' .  $imageURL . '" width="220" height="146"></a></div>
                                                 
                                                 ';  foreach($allTagsbyProduction as $tags){
                                               echo '<div><span class="badge badge-pill badge-primary mb-2"></span><span class="badge badge-primary" style="background: rgb(94,88,88);padding: 6px 4.8px;margin: 2px;">'. $tags["libelle"] . ' </span></div>';

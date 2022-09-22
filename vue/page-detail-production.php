@@ -21,6 +21,8 @@ if (!isset($_SESSION["role"])) {
 $idProduction = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
 $production = null;
 $erreur = false;
+
+
 if (isset($idProduction) && isset($idProduction) != null) {
     $production = getProductionById($idProduction);
 }
@@ -32,8 +34,10 @@ if ($production == null) {
     
     // Récupère la liste des mots clefs de la production
     $allMotsClefs = getAllTagByProductionId($idProduction);
-
+    //récupération de l'image
+    $imageURL = '../uploads/'.$production[0]["filename"];
     
+   
 }
 
 
@@ -81,7 +85,8 @@ if ($production == null) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="gallery">
-                                    <div class="sp-wrap"><a href="my-images/product/cap.jpg"><img class="img-fluid d-block mx-auto" src="my-images/product/cap.jpg"></a><a href="my-images/product/cap.jpg"><img class="img-fluid d-block mx-auto" src="my-images/product/cap.jpg"></a><a href="my-images/product/cap.jpg"><img class="img-fluid d-block mx-auto" src="my-images/product/cap.jpg"></a></div>
+                
+                                        <a href="<?php echo $imageURL ?>"><img class="img-fluid d-block mx-auto" src="<?php echo $imageURL ?>"></a>                                   
                                 </div>
                             </div>
                             <div class="col-md-6">
