@@ -26,6 +26,8 @@ $erreur = false;
 // Ajout de l'utilisateur
 if (isset($confirmation)) {
     if ($pseudo != null && $mdp != null && $pseudo != " " && $mdp != " ") {
+        $checkPseudo = getUsersByPseudo($pseudo);
+        if($checkPseudo == null) {
             try {
                 $id = addUser($pseudo, $mdp);
                 $_SESSION["role"] = "user";
@@ -35,7 +37,10 @@ if (isset($confirmation)) {
                 $erreur = true;
                 $txtErreur = "Merci de contacter un administrateur : " . $e;
             }
-        
+        } else {
+            $erreur = true;
+            $txtErreur = "Pseudo deja utilisé " ;
+        }
     } else {
         $erreur = true;
         $txtErreur = "Les champs sont incomplets.";

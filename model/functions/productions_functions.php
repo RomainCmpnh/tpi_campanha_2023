@@ -200,5 +200,17 @@ function delMotClefsProd($idProduction){
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
+// Recupere toutes les production ordonne par date selon le nombre demande et selon le user connecté
+function getAllProductionMaxPageDateByUser($results_par_page, $idUser){
 
+    $sql = "SELECT * FROM productions WHERE utilisateurs_id = :id_user ORDER BY id DESC LIMIT  :results_par_page";
+
+    $query = connect()->prepare($sql);
+
+    $query->execute([
+        ':id_user' => $idUser,
+        ':results_par_page' => $results_par_page,
+    ]);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>

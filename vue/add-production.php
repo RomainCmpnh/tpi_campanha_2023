@@ -40,6 +40,8 @@ $fileName = basename($_FILES["file"]["name"]);
 $targetFilePath = $targetDir . $fileName;
 $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
 
+$msg = 0;
+
 // Ajout d'une nouvelle production
 if($titre != null && $date != null && $fileName != null){
     $int_Lieu = (int) $idlieu;
@@ -58,6 +60,8 @@ if($titre != null && $date != null && $fileName != null){
         header("Location: accueil.php?new=1");
             exit;
         }
+    } else{
+        $msg = 1;
     }
 
 
@@ -103,6 +107,16 @@ if($titre != null && $date != null && $fileName != null){
                 <div class="block-heading">
                     <p style="font-family: 'Roboto Slab', serif;font-size: 35px;color: rgb(0,0,0);text-align: center;">Ajouter une production</p>
                 </div>
+                <?php
+                            if($msg==1){
+                                echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>Erreur!</strong> L\'image séléctionnée n\'a pas le bon format !
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>';
+                            }
+                        ?>
                 <form action="#" method="POST" enctype="multipart/form-data">
  
                     <div class="form-group"><label for="title">Titre*</label><input class="form-control" type="text" id="titre" name="titre" required=""></div>

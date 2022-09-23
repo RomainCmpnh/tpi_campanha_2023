@@ -4,7 +4,7 @@
 // * Date : 30septembre 2022
 // * Version : 1.0
 // * Fichier : accueil.php
-// * Description : Page d'acceuil : affichage des productions, recherche des productions et information sur Foto'class en bas de page. Permet a l'utilisateur d'ajouter une production
+// * Description : Page d'acceuil : affichage des 10 productions les plus récente, recherche des productions et information sur Foto'class en bas de page. Permet a l'utilisateur d'ajouter une production
 // * Description : Si l'utilisateur selectionne le bouton "voir" d'une production, il accède à la page détail de la production selectionnée
 //**************** */
 
@@ -21,8 +21,8 @@ if (!isset($_SESSION["role"])) {
     header("Location: connexion.php");
 }
 
-
- $allProductionUser = getAllProductionsOrderNewByUser($_SESSION["idUser"]);
+$result_page = 10; // Nombre de productions affichées que l'on veut sur cette page
+ $allProductionUser = getAllProductionMaxPageDateByUser($result_page, $_SESSION["idUser"]);
 
  // Recherche de productions
 $rien = false;
@@ -51,6 +51,8 @@ if($del==1){
         
     }
 }
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -133,9 +135,9 @@ if($del==1){
                                             echo "<p>Nous n’avons trouvé aucun résultat pour <b>'" . $recherche . "'</b></p>";
                                         }
                                         foreach ($allProductionUser as $item) {
-                                              // Récupère les mots clé de la production
-                                              $allTagsbyProduction = getAllTagByProductionId($item["id"]);
-                
+                                            // Récupère les mots clé de la production
+                                            $allTagsbyProduction = getAllTagByProductionId($item["id"]);
+    
                                             // Récupère le lieux de la production
                                             $lieu = getAlllieuxById($item["lieux_id"]);
 

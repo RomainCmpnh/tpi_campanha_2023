@@ -24,7 +24,7 @@
         return array($query->fetchAll(PDO::FETCH_ASSOC), $id);
     }
 
-    // Récupère l'utilisateur via son pseudo et password
+    // Récupère l'utilisateur via son pseudo et son mot de passe
     function GetUserByPseudoAndPassword($pseudo, $password){
         $sql = "SELECT * FROM utilisateurs WHERE login = :login AND password = :password";
     
@@ -33,6 +33,19 @@
         $query->execute([
             ':login' => $pseudo,
             ':password' => $password,
+        ]);
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Récupère un utilisateur via son pseudo
+    function getUsersByPseudo($pseudo){
+
+        $sql = "SELECT * FROM utilisateurs WHERE login = :login" ;
+    
+        $query = connect()->prepare($sql);
+    
+        $query->execute([
+            ':login' => $pseudo,
         ]);
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
