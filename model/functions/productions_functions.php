@@ -85,8 +85,9 @@ function getAllLieuxById($id){
 // Récupère les mots clefs qui correspondent à l'id de la production choisie
 function getAllMotsClefsById($id){
 
-    $sql = "SELECT * FROM productions_has_motsclefs 
-    WHERE production_id = :id";
+    $sql = "SELECT * FROM motsclefs as mc
+    JOIN productions_has_motsclefs as phm
+    WHERE phm.productions_id = :id AND phm.motsclefs_id = mc.id";
 
     $query = connect()->prepare($sql);
 
@@ -99,7 +100,8 @@ function getAllMotsClefsById($id){
 
 // Ajoute une Production
 function addProduction($titre, $date, $description, $filename,$idLieu, $idUser){
-    $sql = "INSERT INTO productions(utilisateurs_id, titre, description,filename, date , lieux_id) VALUES (:id_user, :titre, :description, :filename , :date ,  :lieux_id)";
+    $sql = "INSERT INTO productions(utilisateurs_id, titre, description,filename, date , lieux_id) 
+    VALUES (:id_user, :titre, :description, :filename , :date ,  :lieux_id)";
 
     $query = connect()->prepare($sql);
 

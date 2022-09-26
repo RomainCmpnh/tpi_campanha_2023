@@ -22,13 +22,17 @@ if (!isset($_SESSION["role"])) {
 }
 
 $result_page = 10; // Nombre de productions affichées que l'on veut sur cette page
- $allProductionUser = getAllProductionMaxPageDateByUser($result_page, $_SESSION["idUser"]);
+
+$searchMotClef = 0; // Variable de gestion des mot clef par rapport à la recherche
+
+$allProductionUser = getAllProductionMaxPageDateByUser($result_page, $_SESSION["idUser"]);
 
  // Recherche de productions
 $rien = false;
 $recherche = filter_input(INPUT_GET, "recherche", FILTER_SANITIZE_STRING);
 if ($recherche != null || $recherche != "") {
     $allProductionUser =  getAllProductionUserBySearch($recherche, $_SESSION["idUser"]);
+    $searchMotClef = 1;
     if ($allProductionUser == null) {
         $rien = true;
     }
@@ -136,8 +140,12 @@ if($del==1){
                                         }
                                         foreach ($allProductionUser as $item) {
                                             // Récupère les mots clé de la production
+                                            if($searchMotClef == 1){
+                                                $allTagsbyProduction = getAllTagByProductionId($item["productions_id"]);
+                                            }
+                                            else{
                                             $allTagsbyProduction = getAllTagByProductionId($item["id"]);
-    
+                                            }
                                             // Récupère le lieux de la production
                                             $lieu = getAlllieuxById($item["lieux_id"]);
 

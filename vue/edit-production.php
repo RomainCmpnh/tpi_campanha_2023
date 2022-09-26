@@ -36,10 +36,45 @@ $fileName = basename($_FILES["file"]["name"]);
 $targetFilePath = $targetDir . $fileName;
 $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
 
+
+$ancProduction = getProductionById($productionId);
+
 // Modification de a production
 $succes=0;
+
 if($titre != null && $date != null && $lieu != null && $description != null){
+    if($fileName == null){
+        
+        $fileNameAncValue = '../uploads/'.$ancProduction[0]["filename"];
+
+        $production = getProductionById($productionId);
+        $production = $production[0]["id"];
+        
+            
+            updateProduction($productionId, $titre, $description , $fileNameAncValue, $date, $lieu );
+        
+            if($motsClefs != null){
+                delMotClefsProd($productionId);
+                foreach($motsClefs as $item){
+                    addMotsClefsToProduction($item["id"], $productionId);
+                }
+                
+            } elseif($motsClefs == null){
+                delMotClefsProd($productionId);
+            }
+        
+          
+            $titreValue = $titre;
+            $dateValue = $date;
+            $lieuValue = $lieu;
+            $descriptionValue = $description;
+            $motsClefsValue = $motsClefs;
+            $fileNameValue =  $fileNameAncValue;
+            $succes=1;
+    }
+    else {
     $allowTypes = array('jpg','png');
+    
     if(in_array($fileType, $allowTypes)){
         // Upload file to server
         if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)){ 
@@ -69,16 +104,16 @@ if($titre != null && $date != null && $lieu != null && $description != null){
             $succes=1;
         }
     }
-   
+}
 }
 else{
-   $ancProduction = getProductionById($productionId);
+
    $titreValue = $ancProduction[0]["titre"];
    $dateValue = $ancProduction[0]["date"];
    $lieuValue = $ancProduction[0]["lieux_id"];
    $descriptionValue = $ancProduction[0]["description"];
    $fileNameValue = '../uploads/'.$ancProduction[0]["filename"];
-  // $motsClefsValue = getAllMotsById($productionId);
+   $ancMotsClefsValue = getAllMotsClefsById($productionId);
 }
 
 ?>
@@ -153,15 +188,20 @@ else{
                 <div class="form-group"><label for="motsclefs">Mots clefs</label><select class="form-control d-xl-flex" style="margin-bottom: 9px;" multiple="" name="motsclefs[]" id="motsclefs">
                         <optgroup label="Liste des mots clefs">
                         <?php 
-                            foreach($allTags as $item) {
-
+                              foreach($allTags as $item) {
                                 echo '<option value="'. $item["id"] . '" >' . $item["libelle"] . ' </option>';
-                            
+                        }
+                        if($ancMotsClefsValue != null)
+                        {
+                                foreach($ancMotsClefsValue as $selected){
+                                    echo '<option value="'. $selected["id"] . '" selected="" >' . $selected["libelle"] . ' </option>';
+                                }
                             }
+                               
                             ?>
                         </optgroup>
                     </select></div>
-                    <div class="form-group"><label for="image">Image*</label><input class="form-control-file" type="file" name="file" required="" value=<?php echo '"'.$fileNameValue.'"'; ?>></div>
+                    <div class="form-group"><label for="image">Modifier l'image*</label><input class="form-control-file" type="file" name="file" value=<?php echo '"'.$fileNameValue.'"'; ?>></div>
                 <div class="form-group"><button class="btn btn-primary btn-block" type="submit" style="background: rgb(0,0,0);border-color: rgb(0,0,0);">Modifier</button></div>
             </form>
         </section>
