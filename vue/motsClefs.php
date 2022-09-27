@@ -87,22 +87,29 @@ if($del==1){
 
                 </div>
             </form>
+            <table class="table">
                 <form action="#" method="POST">
-                    <div class="products">
-                    <h3 class="title">Liste mots clés</h3>
-                        <?php 
+                    <h3 class="title">Liste mots clefs - occurence totale a tous les utilisateurs</h3>
+                    
+                        
+                    <?php 
                         foreach($allMotClefs as $item) {
                            $nb = countMotsClefsOccurence($item["id"]);
-                            echo '<div class="item"><span class=""><a href="edit-motClef.php?id='.$item["id"].'">
-                            <i class="fa fa-pencil" style="color: rgb(255,153,0);"></i></a>&nbsp;&nbsp;
-                            <a href="motsClefs.php?del=1&id='.$item["id"].'""><i class="fa fa-trash" style="color: var(--red);"></i></a></span>
-                            <p class="item-name">' . $item['libelle'] . "---------- " . $nb .  " occurences" . '</p>
-                        </div>';
+                            echo '<tr><td><div class="item"><span class=""><a href="edit-motClef.php?id='.$item["id"].'">
+                           <i class="fa fa-pencil" style="color: rgb(255,153,0);"></i></a>&nbsp;&nbsp;</td>
+                           <td> <a href="motsClefs.php?del=1&id='.$item["id"].'"">
+                          <i class="fa fa-trash" style="color: var(--red);"></i></a></span></td>
+                           <td> <p class="item-name">' . $item['libelle'] . "</td> <td>" . $nb .  " occurences" . '</td></p>
+                        </div></tr>';
                         }
                         ?>
+                    
+                     
+                       
                         
-                    </div>
+                
                 </form>
+                </table>  
             </div>
         </section>
     </main>

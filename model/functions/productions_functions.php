@@ -22,10 +22,11 @@ function getAllProductionsOrderNewByUser($userid){
     ]);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
+
 // Récupère tous les lieux
 function getAllLieux(){
 
-    $sql = "SELECT * FROM lieux";
+    $sql = "SELECT * FROM lieux ORDER BY id";
     
     $query = connect()->prepare($sql);
 
@@ -37,7 +38,7 @@ function getAllLieux(){
 // Récupère tous les mots clefs
 function getAllTags(){
 
-    $sql = "SELECT * FROM motsclefs";
+    $sql = "SELECT * FROM motsclefs ORDER BY id";
     
     $query = connect()->prepare($sql);
 
@@ -135,20 +136,6 @@ function updateProduction($idProduction, $titre, $description, $filename, $date,
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
-//
-function updateProductionMotsClefs($idProduction, $idMotClef){
-
-    $sql = "UPDATE productions_has_motsclefs SET productions_id=:productions_id, motsclefs_id= :motsclefs_id WHERE productions_id = :productions_id";
-
-    $query = connect()->prepare($sql);
-
-    $query->execute([
-        ':productions_id' => $idProduction,
-        ':motsclefs_id' => $idMotClef,
-    ]);
-    return $query->fetchAll(PDO::FETCH_ASSOC);
-}
-
 // Ajoute un mot clef a une production
 function addMotsClefsToProduction($idMotClef , $idProduction){
     $sql = "INSERT INTO productions_has_motsclefs(productions_id, motsclefs_id) VALUES (:production_id, :motsclefs_id)";
@@ -203,16 +190,17 @@ function delMotClefsProd($idProduction){
 }
 
 // Recupere toutes les production ordonne par date selon le nombre demande et selon le user connecté
-function getAllProductionMaxPageDateByUser($results_par_page, $idUser){
+function getAllProductionMaxPageDateByUser($resultas_page, $idUser){
 
-    $sql = "SELECT * FROM productions WHERE utilisateurs_id = :id_user ORDER BY id DESC LIMIT  :results_par_page";
+    $sql = "SELECT * FROM productions WHERE utilisateurs_id = :id_user ORDER BY id DESC LIMIT  :resultas_page";
 
     $query = connect()->prepare($sql);
 
     $query->execute([
         ':id_user' => $idUser,
-        ':results_par_page' => $results_par_page,
+        ':resultas_page' => $resultas_page,
     ]);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
+
 ?>

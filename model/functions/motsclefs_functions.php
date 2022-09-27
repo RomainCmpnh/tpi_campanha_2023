@@ -10,7 +10,8 @@
 // récupère tout les mots clefs d'une production
 function getAllTagByProductionId($id){
 
-$sql = "SELECT * FROM motsclefs AS c JOIN  productions_has_motsclefs AS l ON l.motsclefs_id = c.id WHERE productions_id = :id_production  ORDER BY id DESC";
+$sql = "SELECT * FROM motsclefs AS c JOIN  productions_has_motsclefs AS l ON l.motsclefs_id = c.id 
+WHERE productions_id = :id_production  ORDER BY id DESC";
 
 $query = connect()->prepare($sql);
 
@@ -110,4 +111,7 @@ function updateMotClef($idMotClef, $libelle){
     ]);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
+
+
+
 ?>
