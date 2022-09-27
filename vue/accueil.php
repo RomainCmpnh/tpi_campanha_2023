@@ -142,9 +142,11 @@ if($del==1){
                                             // Récupère les mots clé de la production
                                             if($searchMotClef == 1){
                                                 $allTagsbyProduction = getAllTagByProductionId($item["productions_id"]);
+                                                $searchON = true; // variable de gestion servant a passer l'id a la page de détails
                                             }
                                             else{
                                             $allTagsbyProduction = getAllTagByProductionId($item["id"]);
+                                            $searchON = false;
                                             }
                                             // Récupère le lieux de la production
                                             $lieu = getAlllieuxById($item["lieux_id"]);
@@ -168,8 +170,14 @@ if($del==1){
                                                 <div class="lieu">
                                                     <p>' . $lieu[0]["nom"] . '</p>
                                                 </div>
-                                                <a href="page-detail-production.php?id=' . $item["id"] . '"><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button></a>
-                                            </div>
+                                                ';
+                                                if($searchON == true)
+                                                {
+                                                echo '<a href="page-detail-production.php?id=' . $item["productions_id"] . '"><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button></a>';
+                                                } elseif($searchON == false) {
+                                                    echo '<a href="page-detail-production.php?id=' . $item["id"] . '"><button class="btn btn-primary text-right float-right" type="button" style="margin-top: 3%;background: rgb(42,148,245);border-color: rgb(42,148,245);">Voir</button></a>';
+                                                }
+                                           echo' </div>
                                         </div>';
                                             
                                         }
