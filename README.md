@@ -18,5 +18,5 @@ $host = "ip"; // <- L'adresse ip de votre DB
 ## Données de test
 
 ### Compte utilisateur
-Email : user@gmail.com  
+Pseudo : user 
 Mot de passe : 1234

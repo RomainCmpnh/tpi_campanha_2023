@@ -43,6 +43,8 @@ $ancProduction = getProductionById($productionId);
 $succes=0;
 
 if($titre != null && $date != null && $lieu != null && $description != null){
+
+    //si il n'ya pas d'image, l'ancienne est conservée, sinon, la nouvelle est attribuée
     if($fileName == null){
         
         $fileNameAncValue = '../uploads/'.$ancProduction[0]["filename"];
@@ -53,6 +55,7 @@ if($titre != null && $date != null && $lieu != null && $description != null){
             
             updateProduction($productionId, $titre, $description , $fileNameAncValue, $date, $lieu );
         
+            // si l'utilisateur modifie les mots clée, suprimme les liaisons, et le recrée
             if($motsClefs != null){
                 delMotClefsProd($productionId);
                 foreach($motsClefs as $item){
@@ -70,7 +73,8 @@ if($titre != null && $date != null && $lieu != null && $description != null){
             $descriptionValue = $description;
             $motsClefsValue = $motsClefs;
             $fileNameValue =  $fileNameAncValue;
-            $succes=1;
+            header("Location: accueil.php?new=1");
+            exit;
     }
     else {
     $allowTypes = array('jpg','png');
@@ -124,17 +128,17 @@ else{
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Foto'class</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../model/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab&amp;display=swap">
-    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
-    <link rel="stylesheet" href="assets/css/Articles-Badges-images.css">
-    <link rel="stylesheet" href="assets/css/Bootstrap-Image-Uploader.css">
-    <link rel="stylesheet" href="assets/css/Drag--Drop-Upload-Form.css">
+    <link rel="stylesheet" href="../model/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="../model/assets/fonts/simple-line-icons.min.css">
+    <link rel="stylesheet" href="../model/assets/css/Articles-Badges-images.css">
+    <link rel="stylesheet" href="../model/assets/css/Bootstrap-Image-Uploader.css">
+    <link rel="stylesheet" href="../model/assets/css/Drag--Drop-Upload-Form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
-    <link rel="stylesheet" href="assets/css/smoothproducts.css">
+    <link rel="stylesheet" href="../model/assets/css/smoothproducts.css">
 </head>
 
 <body>
@@ -158,16 +162,6 @@ else{
                 <p style="font-family: 'Roboto Slab', serif;font-size: 31px;color: rgb(0,0,0);text-align: center;margin-bottom: 11px;">Modification</p>
             </div>
             <form action="#" method="POST" enctype="multipart/form-data">
-            <?php
-                            if($succes==1){ 
-                            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>Succès!</strong> La modification a été sauvegardée.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                            </div>';
-                            }
-                        ?>
                 <div class="form-group"><label for="titre">Titre</label><input class="form-control" type="text" id="titre" name="titre" required="" value=<?php echo '"'.$titreValue.'"'; ?>></div>
                 <div class="form-group"><label for="date">Date</label><input class="form-control" type="date" required="" name="date" value=<?php echo '"'.$dateValue.'"'; ?>></div>
                 <label for="lieu">Lieu</label><select class="form-control" style="margin-bottom: 9px;" name="lieu">
@@ -188,14 +182,30 @@ else{
                 <div class="form-group"><label for="motsclefs">Mots clefs</label><select class="form-control d-xl-flex" style="margin-bottom: 9px;" multiple="" name="motsclefs[]" id="motsclefs">
                         <optgroup label="Liste des mots clefs">
                         <?php 
-                              foreach($allTags as $item) {
-                                echo '<option value="'. $item["id"] . '" >' . $item["libelle"] . ' </option>';
-                        }
+                              
+                        //affichage de la liste des mots clefs de la production
                         if($ancMotsClefsValue != null)
                         {
-                                foreach($ancMotsClefsValue as $selected){
-                                    echo '<option value="'. $selected["id"] . '" selected="" >' . $selected["libelle"] . ' </option>';
+
+                            foreach($allTags as $item) {
+                                foreach($ancMotsClefsValue as $selected){ 
+                                    if($selected["id"] == $item["id"]){
+                                             echo '<option value="'. $selected["id"] . '" selected="" >' . $selected["libelle"] . ' </option>';
+                                             unset($item);
+                                             }
                                 }
+                                if($item["libelle"] == null)
+                                {
+
+                                }else{
+                                echo '<option value="'. $item["id"] . '" >' . $item["libelle"] . ' </option>';
+                                }
+                            }
+
+                            } else {
+                                foreach($allTags as $item) {
+                                    echo '<option value="'. $item["id"] . '" >' . $item["libelle"] . ' </option>';
+                            }
                             }
                                
                             ?>
@@ -211,12 +221,12 @@ else{
             <p>© 2022 Foto'class - All right reserved</p>
         </div>
     </footer>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../model/assets/js/jquery.min.js"></script>
+    <script src="../model/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="assets/js/smoothproducts.min.js"></script>
-    <script src="assets/js/theme.js"></script>
-    <script src="assets/js/Bootstrap-Image-Uploader.js"></script>
+    <script src="../model/assets/js/smoothproducts.min.js"></script>
+    <script src="../model/assets/js/theme.js"></script>
+    <script src="../model/assets/js/Bootstrap-Image-Uploader.js"></script>
 </body>
 
 </html>

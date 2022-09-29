@@ -54,7 +54,7 @@ function getAllProductionUserBySearch($search, $userid){
     $search = "%".$search."%";
 
     
-    $sql = "SELECT * FROM productions  AS c 
+    $sql = "SELECT DISTINCT c.id , c.date , c.description , c.filename , c.lieux_id, c.titre , c.utilisateurs_id, t.productions_id  FROM productions  AS c 
     INNER JOIN lieux as l ON l.id = c.lieux_id  
     LEFT JOIN productions_has_motsclefs as t ON c.id = t.productions_id 
     LEFT JOIN motsclefs as m ON t.motsclefs_id = m.id
@@ -70,6 +70,7 @@ function getAllProductionUserBySearch($search, $userid){
     ]);
     return $query->fetchAll(PDO::FETCH_ASSOC);
 }
+
 // Récupère un lieu qui correspond à un certain ID
 function getAllLieuxById($id){
 
@@ -121,7 +122,8 @@ function addProduction($titre, $date, $description, $filename,$idLieu, $idUser){
 // Modifie les données d'une production
 function updateProduction($idProduction, $titre, $description, $filename, $date, $idLieu){
 
-    $sql = "UPDATE productions SET titre=:titre, description=:description, date=:date,  filename = :filename, lieux_id = :lieux_id WHERE id = :production_id";
+    $sql = "UPDATE productions SET titre=:titre, description=:description, date=:date,  filename = :filename, lieux_id = :lieux_id 
+    WHERE id = :production_id";
 
     $query = connect()->prepare($sql);
 
