@@ -12,8 +12,8 @@
     {
         static $myDb = null;
         $dbName = "db_fotoclass";
-        $dbUser = "user";
-        $dbPass = "password";
+        $dbUser = "admPhoto";
+        $dbPass = "XvqaKAx6#jrRJXT$";
         $host = "localhost";
         if ($myDb === null) {
             try {

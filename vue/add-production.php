@@ -36,7 +36,10 @@ $allTags = getAllTags();
 
 // File upload path
 $targetDir = "../uploads/";
-$fileName = basename($_FILES["file"]["name"]);
+$imgName = basename($_FILES["file"]["name"]);
+$new_image_name = uniqid("IMG_",false);
+$maxsize    = 1097152;
+$fileName = $new_image_name.".".$imgName;
 $targetFilePath = $targetDir . $fileName;
 $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
 
@@ -60,10 +63,9 @@ if($titre != null && $date != null && $fileName != null){
         header("Location: accueil.php?new=1");
             exit;
         }
-    } else{
+        } else{
         $msg = 1;
     }
-
 
 }
 ?>

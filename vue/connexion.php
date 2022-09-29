@@ -39,7 +39,7 @@ if (isset($pseudo) != null && isset($mdp) != null) {
         }
     } else {
         $erreur = true;
-        $txtErreur = "le pseudo ou le mot de passe est incorrecte.";
+        $txtErreur = "le pseudo ou le mot de passe est incorrect.";
     }
 }
 

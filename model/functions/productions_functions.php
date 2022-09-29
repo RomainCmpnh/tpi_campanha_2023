@@ -54,11 +54,11 @@ function getAllProductionUserBySearch($search, $userid){
     $search = "%".$search."%";
 
     
-    $sql = "SELECT DISTINCT c.id , c.date , c.description , c.filename , c.lieux_id, c.titre , c.utilisateurs_id, t.productions_id  FROM productions  AS c 
-    INNER JOIN lieux as l ON l.id = c.lieux_id  
-    LEFT JOIN productions_has_motsclefs as t ON c.id = t.productions_id 
+    $sql = "SELECT DISTINCT p.id , p.date , p.description , p.filename , p.lieux_id, p.titre , p.utilisateurs_id, t.productions_id  FROM productions  AS p 
+    INNER JOIN lieux as l ON l.id = p.lieux_id  
+    LEFT JOIN productions_has_motsclefs as t ON p.id = t.productions_id 
     LEFT JOIN motsclefs as m ON t.motsclefs_id = m.id
-    WHERE  utilisateurs_id = :idUser AND l.nom LIKE :search OR c.titre LIKE :search2 OR m.libelle LIKE :search3";
+    WHERE  utilisateurs_id = :idUser AND l.nom LIKE :search OR p.titre LIKE :search2 OR m.libelle LIKE :search3";
 
     $query = connect()->prepare($sql);
 

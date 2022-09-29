@@ -102,7 +102,7 @@ if($del==1){
             <div class="container">
                 <div class="block-heading">
                     <p style="font-family: 'Roboto Slab', serif;font-size: 32px;color: rgb(0,0,0);">Foto'class</p>
-                    <p style="font-family: 'Roboto Slab', serif;">Voici vos super productions !</p>
+                    <p style="font-family: 'Roboto Slab', serif;">Voici vos fantastiques productions !</p>
                     <?php
                             if($confMsg==1){
                                 echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
