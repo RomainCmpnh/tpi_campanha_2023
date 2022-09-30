@@ -89,7 +89,7 @@ if($del==1){
             </form>
             <table class="table">
                 <form action="#" method="POST">
-                    <h3 class="title">Liste mots clefs - occurence totale à tous les utilisateurs</h3>
+                    <h3 class="title">Liste mots clefs - occurences totales à tous les utilisateurs</h3>
                     
                         
                     <?php 

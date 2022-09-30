@@ -93,7 +93,7 @@ if($del==1){
         </div>
     </nav>
     <main class="page landing-page">
-        <section class="clean-block clean-hero" style="color: rgba(0,0,0,0.85);background: url(&quot;assets/img/my-images/banner.webp&quot;);">
+        <section class="clean-block clean-hero" style="color: rgba(0,0,0,0.85);background: url(&quot;../model/assets/img/my-images/banner.webp&quot;);">
             <div class="text">
                 <h2 style="font-family: 'Roboto Slab', serif;height: 49px;width: 215.641px;font-size: 38px;">Foto'class</h2><button class="btn btn-outline-light btn-lg" type="button">Voir vos productions</button>
             </div>
@@ -199,7 +199,7 @@ if($del==1){
                     <p>Qui sommes nous ?</p>
                 </div>
                 <div class="row align-items-center">
-                    <div class="col-md-6"><img class="img-thumbnail" src="assets/img/my-images/home/who-are.jpg"></div>
+                    <div class="col-md-6"><img class="img-thumbnail" src="../model/assets/img/my-images/home/who-are.jpg"></div>
                     <div class="col-md-6">
                         <h3>Foto'class</h3>
                         <div class="getting-started-info">
