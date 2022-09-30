@@ -38,7 +38,6 @@ $allTags = getAllTags();
 $targetDir = "../uploads/";
 $imgName = basename($_FILES["file"]["name"]);
 $new_image_name = uniqid("IMG_",false);
-$maxsize    = 1097152;
 $fileName = $new_image_name.".".$imgName;
 $targetFilePath = $targetDir . $fileName;
 $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
