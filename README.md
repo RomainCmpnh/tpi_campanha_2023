@@ -18,5 +18,5 @@ $host = "localhost"; // <- L'adresse ip de votre DB
 ## Données de test
 
 ### Compte utilisateur
-Pseudo : user 
+Pseudo : User 
 Mot de passe : 1234
